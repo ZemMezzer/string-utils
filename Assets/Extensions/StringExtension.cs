@@ -5,7 +5,7 @@ namespace StringUtils.Extensions
 {
     public static class StringExtension
     {
-        public static void ReplaceChar(this string str, char originChar, char replaceChar)
+        public static string ReplaceChar(this string str, char originChar, char replaceChar)
         {
             for (int i = 0; i < str.Length; i++)
             {
@@ -15,9 +15,11 @@ namespace StringUtils.Extensions
                     break;
                 }
             }
+            
+            return str;
         }
 
-        public static void ReplaceAll(this string str, char originChar, char replaceChar)
+        public static string ReplaceAll(this string str, char originChar, char replaceChar)
         {
             for (int i = 0; i < str.Length; i++)
             {
@@ -26,9 +28,11 @@ namespace StringUtils.Extensions
                     ReplaceAt(str, i, replaceChar);
                 }
             }
+
+            return str;
         }
         
-        public static void ReplaceAt(this string str, int index, char character)
+        public static string ReplaceAt(this string str, int index, char character)
         {
             if (index >= str.Length)
                 throw new ArgumentOutOfRangeException();
@@ -43,7 +47,8 @@ namespace StringUtils.Extensions
             {
                 handle.Free();
             }
+
+            return str;
         }
-        
     }
 }
