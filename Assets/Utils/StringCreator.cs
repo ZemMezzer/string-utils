@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StringUtils.Utils
 {
-    public class StringCreator
+    public sealed class StringCreator
     {
         public int Length => currentIndex;
         public char this[int i]
@@ -38,12 +38,19 @@ namespace StringUtils.Utils
             charsBuffer = new char[chars.Length];
         }
 
+        public StringCreator(string str)
+        {
+            stringOutput = str;
+            currentIndex = str.Length;
+            charsBuffer = new char[str.Length];
+        }
+        
         public StringCreator(int length)
         {
             stringOutput = new string(DefaultChar, length);
             charsBuffer = new char[length];
         }
-        
+
         public static string operator +(string str, StringCreator stringCreator)
         {
             return stringCreator.Add(str);
