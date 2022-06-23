@@ -1,10 +1,20 @@
-using StringUtils.Extensions;
+using System;
+using System.Collections;
+using System.Diagnostics.Contracts;
+using System.Globalization;
+using System.Text;
+using StringUtils.Utils;
+using StringUtils.Utils.Extensions;
 using UnityEngine;
+using UnityEngine.Profiling;
+using UnityEngine.UI;
 
 namespace StringUtils.Assets.Demo
 {
     public class StringUtilsDemo : MonoBehaviour
     {
+        [SerializeField] private Text label;
+        
         private void Start()
         {
             string outputString = "Hello World";
@@ -16,6 +26,18 @@ namespace StringUtils.Assets.Demo
             outputString.ReplaceChar('o', 'D');
             
             Debug.Log($"Original String After Change: {outputString}, Hash Code: {outputString.GetHashCode().ToString()}");
+
+
+            StringCreator stringCreator = new StringCreator(12);
+
+            stringCreator += "Hello";
+            stringCreator += " ";
+            stringCreator += "World";
+
+            stringCreator.Insert(stringCreator.Length, "!");
+
+            Debug.Log(stringCreator.ToString());
+            label.text = stringCreator;
         }
     }
 }
