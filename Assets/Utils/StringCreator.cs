@@ -1,6 +1,7 @@
 using System;
 using StringUtils.Utils.Extensions;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace StringUtils.Utils
 {
@@ -53,12 +54,30 @@ namespace StringUtils.Utils
 
         public static string operator +(string str, StringCreator stringCreator)
         {
-            return stringCreator.Add(str);
+            return stringCreator.Append(str);
         }
         
         public static StringCreator operator +(StringCreator stringCreator, string str)
         {
-            stringCreator.Add(str);
+            stringCreator.Append(str);
+            return stringCreator;
+        }
+        
+        public static StringCreator operator +(StringCreator stringCreator, int value)
+        {
+            stringCreator.Append(value);
+            return stringCreator;
+        }
+        
+        public static StringCreator operator +(StringCreator stringCreator, bool value)
+        {
+            stringCreator.Append(value);
+            return stringCreator;
+        }
+        
+        public static StringCreator operator +(StringCreator stringCreator, char value)
+        {
+            stringCreator.Append(value);
             return stringCreator;
         }
 
@@ -70,12 +89,12 @@ namespace StringUtils.Utils
         public StringCreator Set(string str)
         {
             Clear();
-            Add(str);
+            Append(str);
 
             return this;
         }
         
-        public string Add(string str)
+        public string Append(string str)
         {
             for (int i = 0; i < str.Length; i++)
             {
@@ -84,6 +103,74 @@ namespace StringUtils.Utils
             }
 
             AddIndexOffset(str.Length);
+            return stringOutput;
+        }
+
+        public string Append(char value)
+        {
+            stringOutput.ReplaceAt(currentIndex, value);
+            
+            AddIndexOffset(1);
+            return stringOutput;
+        }
+
+        public string Append(bool value)
+        {
+            return Append(value.ToString());
+        }
+
+        public string Append(int value)
+        {
+            int bufferIndex = 0;
+            int maxLength = 11;
+            
+            int offset = 0;
+
+            if (value == 0)
+            {
+                stringOutput.ReplaceAt(currentIndex, '0');
+                AddIndexOffset(1);
+                return stringOutput;
+            }
+            
+            
+            if (value < 0)
+            {
+                charsBuffer[bufferIndex] = '-';
+                bufferIndex++;
+                offset = 1;
+                value = Mathf.Abs(value);
+            }
+
+            int startIndex = bufferIndex - offset + maxLength - 1;
+            int index = startIndex;
+        
+            do
+            {
+                charsBuffer[index] = (char)('0' + value % 10);
+                value /= 10;
+                --index;
+            }
+            while (value != 0);
+
+            int length = startIndex + offset - index;
+
+            if (bufferIndex != index + 1)
+            {
+                while (index != startIndex)
+                {
+                    ++index;
+                    charsBuffer[bufferIndex] = charsBuffer[index];
+                    ++bufferIndex;
+                }
+            }
+            
+            for (int i = 0; i < length; i++)
+            {
+                stringOutput.ReplaceAt(i + currentIndex, charsBuffer[i]);
+            }
+            AddIndexOffset(length);
+
             return stringOutput;
         }
 
