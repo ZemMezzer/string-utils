@@ -26,6 +26,7 @@ namespace StringUtils.Utils
             }
         }
 
+        private readonly char[] numberCharsBuffer = new char[11];
         private readonly char[] charsBuffer;
         private readonly string stringOutput;
         private int currentIndex;
@@ -123,7 +124,7 @@ namespace StringUtils.Utils
         {
             int bufferIndex = 0;
             int maxLength = 11;
-            
+
             int offset = 0;
 
             if (value == 0)
@@ -136,9 +137,13 @@ namespace StringUtils.Utils
             
             if (value < 0)
             {
-                charsBuffer[bufferIndex] = '-';
+                numberCharsBuffer[bufferIndex] = '-';
                 bufferIndex++;
                 offset = 1;
+
+                if (value == int.MinValue)
+                    value++;
+                
                 value = Mathf.Abs(value);
             }
 
@@ -147,9 +152,12 @@ namespace StringUtils.Utils
         
             do
             {
-                charsBuffer[index] = (char)('0' + value % 10);
+                numberCharsBuffer[index] = (char)('0' + value % 10);
                 value /= 10;
                 --index;
+                
+                if(index<0)
+                    break;
             }
             while (value != 0);
 
@@ -160,14 +168,16 @@ namespace StringUtils.Utils
                 while (index != startIndex)
                 {
                     ++index;
-                    charsBuffer[bufferIndex] = charsBuffer[index];
+                    numberCharsBuffer[bufferIndex] = numberCharsBuffer[index];
                     ++bufferIndex;
                 }
             }
+
+            length = Mathf.Clamp(length, 0, stringOutput.Length - currentIndex);
             
             for (int i = 0; i < length; i++)
             {
-                stringOutput.ReplaceAt(i + currentIndex, charsBuffer[i]);
+                stringOutput.ReplaceAt(i + currentIndex, numberCharsBuffer[i]);
             }
             AddIndexOffset(length);
 
