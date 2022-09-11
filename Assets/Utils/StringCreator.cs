@@ -1,7 +1,5 @@
 using System;
 using StringUtils.Utils.Extensions;
-using UnityEngine;
-using UnityEngine.Profiling;
 
 namespace StringUtils.Utils
 {
@@ -144,7 +142,7 @@ namespace StringUtils.Utils
                 if (value == int.MinValue)
                     value++;
                 
-                value = Mathf.Abs(value);
+                value = Abs(value);
             }
 
             int startIndex = bufferIndex - offset + maxLength - 1;
@@ -173,7 +171,7 @@ namespace StringUtils.Utils
                 }
             }
 
-            length = Mathf.Clamp(length, 0, stringOutput.Length - currentIndex);
+            length = Clamp(length, 0, stringOutput.Length - currentIndex);
             
             for (int i = 0; i < length; i++)
             {
@@ -215,8 +213,22 @@ namespace StringUtils.Utils
         private void AddIndexOffset(int value)
         {
             currentIndex += value;
-            currentIndex = Mathf.Clamp(currentIndex, 0, charsBuffer.Length);
+            currentIndex = Clamp(currentIndex, 0, charsBuffer.Length);
         }
+
+        private int Clamp(int value, int a, int b)
+        {
+            int min = b < value ? b : value;
+            int max = a > min ? a : min;
+            return max;
+        }
+
+        private int Abs(int value)
+        {
+            return value > -value ? value : -value;
+        }
+        
+        public static int max(int x, int y) { return x > y ? x : y; }
 
         public void Clear()
         {
